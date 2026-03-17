@@ -11,3 +11,18 @@ build/
 
 # logs
 *.log
+
+# AI / ML
+*.pt
+*.pth
+*.onnx
+
+# Outputs
+*.jpg
+*.png
+output_*
+
+# Python
+__pycache__/
+*.pyc
+venv/
