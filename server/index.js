@@ -1,8 +1,12 @@
-import "dotenv/config";
-import express from "express";
-import http from "http";
-import { Server as SocketIOServer } from "socket.io";
-import cors from "cors";
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
+const express = require("express");
+const http = require("http");
+const { Server: SocketIOServer } = require("socket.io");
+const cors = require("cors");
+const connectDB = require("./config/db");
+
+// ─── Connect to Database ──────────────────────────────────────────────────────
+connectDB();
 
 // ─── App Setup ───────────────────────────────────────────────────────────────
 const app = express();
@@ -13,9 +17,13 @@ const io = new SocketIOServer(server, {
 
 const PORT = process.env.PORT || 5000;
 
+// ─── Routes ───────────────────────────────────────────────────────────────────
+const junctionRouter = require('./routes/junctions');
+
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
+app.use('/api/junctions', junctionRouter);
 
 // ─── Health Check Route ───────────────────────────────────────────────────────
 app.get("/", (req, res) => {
