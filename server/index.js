@@ -1,29 +1,45 @@
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const express = require("express");
 const http = require("http");
-const { Server: SocketIOServer } = require("socket.io");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const { initSocket } = require("./config/socket");
 
-// ─── Connect to Database ──────────────────────────────────────────────────────
+// ─── Connect to Database & Redis ────────────────────────────────────────────────
 connectDB();
+const redis = require('./config/redis');
+const startDensityPoller = require('./jobs/densityPoller');
+
+// Start the cron job simulation
+startDensityPoller();
+
+// ─── Redis Test ──────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    await redis.set('test', 'hello');
+    const value = await redis.get('test');
+    console.log(`📡 Redis Test result: expected "hello", got "${value}"`);
+  } catch (err) {
+    console.error('❌ Redis Test failed:', err.message);
+  }
+})();
 
 // ─── App Setup ───────────────────────────────────────────────────────────────
 const app = express();
 const server = http.createServer(app);
-const io = new SocketIOServer(server, {
-  cors: { origin: "*" },
-});
+const io = initSocket(server);
 
 const PORT = process.env.PORT || 5000;
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
-const junctionRouter = require('./routes/junctions');
+const junctionRouter  = require('./routes/junctions');
+const emergencyRouter = require('./routes/emergency');
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
 app.use('/api/junctions', junctionRouter);
+app.use('/api/emergency', emergencyRouter);
 
 // ─── Health Check Route ───────────────────────────────────────────────────────
 app.get("/", (req, res) => {
@@ -31,15 +47,6 @@ app.get("/", (req, res) => {
     status: "ok",
     message: "🚦 AI Traffic & Emergency Grid server is running!",
     timestamp: new Date().toISOString(),
-  });
-});
-
-// ─── Socket.IO Connection ─────────────────────────────────────────────────────
-io.on("connection", (socket) => {
-  console.log(`🔌 Client connected   → id: ${socket.id}`);
-
-  socket.on("disconnect", () => {
-    console.log(`❌ Client disconnected → id: ${socket.id}`);
   });
 });
 
