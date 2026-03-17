@@ -8,10 +8,10 @@ const { initSocket } = require("./config/socket");
 // ─── Connect to Database & Redis ────────────────────────────────────────────────
 connectDB();
 const redis = require('./config/redis');
-const startDensityPoller = require('./jobs/densityPoller');
-
-// Start the cron job simulation
-startDensityPoller();
+// densityPoller is DISABLED — Python AI service now pushes density via
+// POST /api/density/report every 5 seconds from real YOLO video analysis.
+// const startDensityPoller = require('./jobs/densityPoller');
+// startDensityPoller();
 
 // ─── Redis Test ──────────────────────────────────────────────────────────────
 (async () => {
@@ -34,12 +34,14 @@ const PORT = process.env.PORT || 5000;
 // ─── Routes ───────────────────────────────────────────────────────────────────
 const junctionRouter  = require('./routes/junctions');
 const emergencyRouter = require('./routes/emergency');
+const densityRouter   = require('./routes/density');
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
 app.use('/api/junctions', junctionRouter);
 app.use('/api/emergency', emergencyRouter);
+app.use('/api/density',   densityRouter);
 
 // ─── Health Check Route ───────────────────────────────────────────────────────
 app.get("/", (req, res) => {

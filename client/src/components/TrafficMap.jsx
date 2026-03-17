@@ -38,7 +38,7 @@ const MapPanner = ({ pos }) => {
   return null;
 };
 
-const TrafficMap = ({ initialJunctions = [], emergencyState = {} }) => {
+const TrafficMap = ({ initialJunctions = [], emergencyState = {}, onJunctionClick }) => {
   const [junctionMap, setJunctionMap] = useState(() => {
     const map = {};
     initialJunctions.forEach((j) => {
@@ -149,6 +149,9 @@ const TrafficMap = ({ initialJunctions = [], emergencyState = {} }) => {
                 fillOpacity: inCorridor && emergencyActive ? 0.9 : 0.75,
                 weight: inCorridor && emergencyActive ? 3 : 2,
                 className: markerClass,
+              }}
+              eventHandlers={{
+                click: () => onJunctionClick && onJunctionClick(j),
               }}
             >
               <Popup className="junction-popup">

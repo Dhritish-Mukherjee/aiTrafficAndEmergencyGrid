@@ -20,6 +20,12 @@ const trafficLogSchema = new mongoose.Schema({
     enum: ['LOW', 'MODERATE', 'HIGH', 'SEVERE'],
     required: true,
   },
+  // YOLO class breakdown: { car: 10, bus: 2, motorcycle: 3, truck: 1 }
+  classes: {
+    type: Map,
+    of: Number,
+    default: {},
+  },
   timestamp: {
     type: Date,
     default: Date.now,

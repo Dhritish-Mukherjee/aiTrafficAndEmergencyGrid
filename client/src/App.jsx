@@ -4,11 +4,13 @@ import useEmergency from './hooks/useEmergency';
 import TrafficMap from './components/TrafficMap';
 import StatsBar from './components/StatsBar';
 import EmergencyPanel from './components/EmergencyPanel';
+import CCTVPanel from './components/CCTVPanel';
 import Toast from './components/Toast';
 import './App.css';
 
 function App() {
   const { junctions, loading, error } = useJunctions();
+  const [selectedJunction, setSelectedJunction] = useState(null);
 
   const { emergencyState, activate, deactivate, toast, loading: eLoading, formError } =
     useEmergency();
@@ -64,10 +66,19 @@ function App() {
           <TrafficMap
             initialJunctions={junctions}
             emergencyState={emergencyState}
+            onJunctionClick={setSelectedJunction}
           />
         </div>
 
         <aside className="dashboard-sidebar">
+          {/* CCTV Panel — shown when a junction is selected */}
+          {selectedJunction && (
+            <CCTVPanel
+              junction={selectedJunction}
+              onClose={() => setSelectedJunction(null)}
+            />
+          )}
+
           <EmergencyPanel
             emergencyState={emergencyState}
             activate={activate}
