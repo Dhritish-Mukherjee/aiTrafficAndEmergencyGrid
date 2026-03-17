@@ -38,7 +38,7 @@ const MapPanner = ({ pos }) => {
   return null;
 };
 
-const TrafficMap = ({ initialJunctions = [], emergencyState = {}, onJunctionMapReady }) => {
+const TrafficMap = ({ initialJunctions = [], emergencyState = {} }) => {
   const [junctionMap, setJunctionMap] = useState(() => {
     const map = {};
     initialJunctions.forEach((j) => {
@@ -52,8 +52,6 @@ const TrafficMap = ({ initialJunctions = [], emergencyState = {}, onJunctionMapR
         redDuration: 30,
       };
     });
-    // hand it up to parent immediately so useEmergency can read locations
-    if (onJunctionMapReady) onJunctionMapReady(map);
     return map;
   });
 

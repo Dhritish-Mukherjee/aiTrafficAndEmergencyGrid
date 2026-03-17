@@ -16,24 +16,49 @@
   z-index: 1;
 }
 
-/* ── Pulsing Ring Animation for SEVERE / Critical ──────────────────── */
+/* ── Pulsing Ring — SEVERE density ─────────────────────────────────── */
 @keyframes pulse-ring {
-  0% {
-    stroke-opacity: 0.7;
-    stroke-width: 4;
-  }
-  50% {
-    stroke-opacity: 0.3;
-    stroke-width: 8;
-  }
-  100% {
-    stroke-opacity: 0.7;
-    stroke-width: 4;
-  }
+  0%   { stroke-opacity: 0.7; stroke-width: 4; }
+  50%  { stroke-opacity: 0.2; stroke-width: 10; }
+  100% { stroke-opacity: 0.7; stroke-width: 4; }
 }
 
 .marker-pulse {
   animation: pulse-ring 1.5s ease-in-out infinite;
+}
+
+/* ── Emergency corridor junction pulse — rapid bright red ──────────── */
+@keyframes emergency-pulse {
+  0%   { stroke-opacity: 1;   stroke-width: 3;  fill-opacity: 0.9; }
+  40%  { stroke-opacity: 0.3; stroke-width: 14; fill-opacity: 0.5; }
+  100% { stroke-opacity: 1;   stroke-width: 3;  fill-opacity: 0.9; }
+}
+
+.marker-emergency-pulse {
+  animation: emergency-pulse 0.9s ease-out infinite;
+}
+
+/* ── Emergency corridor dashed line ────────────────────────────────── */
+@keyframes dash-flow {
+  to { stroke-dashoffset: -32; }
+}
+
+.corridor-line {
+  animation: dash-flow 0.8s linear infinite;
+}
+
+/* ── Ambulance marker ──────────────────────────────────────────────── */
+.ambulance-marker {
+  font-size: 28px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8));
+  animation: ambulance-bounce 0.6s ease-in-out infinite alternate;
+  user-select: none;
+}
+
+@keyframes ambulance-bounce {
+  from { transform: translateY(0px) scale(1);    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)); }
+  to   { transform: translateY(-4px) scale(1.1); filter: drop-shadow(0 0 16px rgba(239, 68, 68, 1));  }
 }
 
 /* ── Leaflet Popup Overrides ───────────────────────────────────────── */

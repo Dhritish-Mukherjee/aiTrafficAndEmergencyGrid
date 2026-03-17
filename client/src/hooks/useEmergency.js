@@ -17,7 +17,7 @@ const INITIAL_STATE = {
  * Manages the full lifecycle of an emergency event.
  * Exposes: emergencyState, activate(), deactivate(), toast
  */
-const useEmergency = (junctionMap = {}) => {
+const useEmergency = () => {
   const [state, setState] = useState(INITIAL_STATE);
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,11 +31,8 @@ const useEmergency = (junctionMap = {}) => {
 
   // ── Socket: emergency activated ──────────────────────────────────────────────
   const onActivated = useCallback((data) => {
-    // Build corridor positions from junctionMap (already loaded in TrafficMap)
-    const corridorPositions = data.corridorJunctions
-      .map((id) => junctionMap[id]?.location)
-      .filter(Boolean)
-      .map((loc) => ({ lat: loc.lat, lng: loc.lng }));
+    // Backend now sends the ordered corridorPositions array directly
+    const corridorPositions = data.corridorPositions ? [...data.corridorPositions] : [];
 
     // Add origin as first position
     if (data.origin) {
@@ -53,7 +50,7 @@ const useEmergency = (junctionMap = {}) => {
     });
 
     showToast(`🚨 Emergency activated! Corridor: ${data.junctionNames.join(' → ')}`, 'emergency');
-  }, [junctionMap]);
+  }, []);
 
   // ── Socket: ambulance location ping ─────────────────────────────────────────
   const onLocation = useCallback((data) => {

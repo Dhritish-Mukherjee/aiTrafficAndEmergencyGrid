@@ -61,6 +61,7 @@ router.post('/activate', async (req, res) => {
       origin,
       destination,
       corridorJunctions: path,
+      corridorPositions: junctions.map(j => ({ lat: j.location.lat, lng: j.location.lng })),
       junctionNames: junctions.map((j) => j.name),
       totalJunctions: junctions.length,
     });
